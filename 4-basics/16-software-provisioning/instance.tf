@@ -19,6 +19,9 @@ resource "aws_instance" "example" {
       "sudo /tmp/script.sh",
     ]
   }
+  provisioner "local-exec" {
+    command = "echo ${aws_instance.example.private_ip} >> private_ips.txt"
+  }
   connection {
     host        = coalesce(self.public_ip, self.private_ip)
     type        = "ssh"
@@ -27,3 +30,6 @@ resource "aws_instance" "example" {
   }
 }
 
+output "ip" {
+  value = aws_instance.example.public_ip // or on instance provisioner
+}
